@@ -2,8 +2,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Iterable
 
-from itertools import chain
-
 from pathlib import Path
 
 __all__ = (

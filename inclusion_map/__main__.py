@@ -114,7 +114,7 @@ def default_ignore_dirs(language: str) -> set[str]:
     raise unsupported_language_error(language)
 
 
-if __name__ == '__main__':
+def main():
     # ---- argument parsing
     args = build_arg_parser().parse_args()
 
@@ -166,3 +166,7 @@ if __name__ == '__main__':
         plt.show()
     else:
         print("No intern inclusion found")
+
+
+if __name__ == '__main__':
+    main()

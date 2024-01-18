@@ -7,6 +7,8 @@ from pathlib import Path
 from inclusion_map.back.inclusion_instructions import InclusionInstructionMatcher
 from inclusion_map.back.target_parser import TargetParser
 
+__all__ = ('Project',)
+
 
 class BiMap:
     def __init__(self):
@@ -148,7 +150,8 @@ class Project:
         du projet.
         """
         new_root = new_root.resolve()
-        sub_roots = [root for root in self.root_dirs if root.is_relative_to(new_root)]
+        sub_roots = [
+            root for root in self.root_dirs if root.is_relative_to(new_root)]
         self.root_dirs.difference_update(sub_roots)
         self.root_dirs.add(new_root)
 
@@ -187,7 +190,7 @@ class Project:
 
             for b in a_dependencies:
                 if (b_dependencies := self.dependencies.get_values(b)):
-                    for c in (redundancy :=  b_dependencies & a_dependencies):
+                    for c in (redundancy := b_dependencies & a_dependencies):
                         print(
                             f"simplified : {self.readable_path(a)} -> "
                             f"{self.readable_path(b)} -> {self.readable_path(c)}"
