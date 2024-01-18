@@ -110,10 +110,11 @@ class Project:
 
     def __repr__(self) -> str:
         string_builder = []
-        for code_file in sorted(self.files, key = lambda file: file.name):
+        for code_file in sorted(self.files, key=lambda file: file.name):
             code_file_path = self.readable_path(code_file)
             for required_code_file in self.dependencies.get_values(code_file):
-                required_code_file_path = self.readable_path(required_code_file)
+                required_code_file_path = self.readable_path(
+                    required_code_file)
                 string_builder.append(
                     f'inclusion : {code_file_path} -> {required_code_file_path}'
                 )
@@ -177,7 +178,7 @@ class Project:
         for code_file in self.files:
             self._find_file_dependencies(code_file, target_parser)
 
-    def remove_redundancies(self):  # TODO: tester remove_redundancies
+    def remove_redundancies(self):
         """Pour chaque triplet de fichiers sources distincts (a, b, c) du projet,
         Si a inclut b, b inclut c, et a inclut c,
         alors supprime l'information que a inclu c
@@ -188,14 +189,15 @@ class Project:
 
             for b in a_dependencies:
                 if (b_dependencies := self.dependencies.get_values(b)):
-                    a_redundant_include.extend(b_dependencies & a_dependencies)
+                    for c in (redundancy :=  b_dependencies & a_dependencies):
+                        print(
+                            f"simplified : {self.readable_path(a)} -> "
+                            f"{self.readable_path(b)} -> {self.readable_path(c)}"
+                        )
+                    a_redundant_include.extend(redundancy)
 
             for c in a_redundant_include:
                 self.dependencies.discard_key_value(a, c)
-                print(
-                    f"simplified : {self.readable_path(a)} -> "
-                    f"{self.readable_path(b)} -> {self.readable_path(c)}"
-                )
 
     def is_not_empty(self) -> bool:
         """Renvoie True s'il y a au moins une instruction d'inclusion d'un
