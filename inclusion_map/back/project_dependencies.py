@@ -74,7 +74,7 @@ class Project:
     """
     Attributs
     ---------
-    root_dirs: list[Path]
+    root_dirs: set[Path]
         Chemins absolus des répertoires racines du projet.  Les fichiers sources
         du projets sont tous contenus dans les répertoires racines ou leurs
         sous-répertoires.
@@ -100,7 +100,7 @@ class Project:
     """
 
     def __init__(self, inclusion_matcher, target_parser_type):
-        self.root_dirs: list[Path] = []
+        self.root_dirs: set[Path] = set()
         self.include_dirs: list[Path] = []
         self.files: set[Path] = set()
         self.dependencies: BiMap[Path, Path] = BiMap()
@@ -148,11 +148,9 @@ class Project:
         du projet.
         """
         new_root = new_root.resolve()
-        for i, root in enumerate(self.root_dirs):
-            if root.is_relative_to(new_root):
-                self.root_dirs[i] = new_root
-                return
-        self.root_dirs.append(new_root)
+        sub_roots = [root for root in self.root_dirs if root.is_relative_to(new_root)]
+        self.root_dirs.difference_update(sub_roots)
+        self.root_dirs.add(new_root)
 
     def add_include_directory(self, directory: Path):
         """Ajoute le chemin absolu `directory` à la liste des répertoires dans
