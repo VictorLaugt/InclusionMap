@@ -1,7 +1,14 @@
-# Utilisation
+# InclusionMap
 
+## Installation
+`pip install InclusionMap`
 
-## Options générales
+## Utilisation
+`inclusionmap LIST_OF_DIRECTORIES ... -l PROGRAMMING_LANGUAGE [OPTIONS]`
+ou
+`python3 -m inclusion_map LIST_OF_DIRECTORIES ... -l PROGRAMMING_LANGUAGE [OPTIONS]`
+
+### Options générales
 `LIST_OF_DIRECTORIES ...`
 Répertoires racines du projet.
 
@@ -28,7 +35,7 @@ Simplifie le graphe en exploitant la transitivité de la relation d'inclusion.
 Si x inclut y, y inclut z et x inclut z, alors n'affiche pas le fait que x inclut z.
 
 
-## Options graphiques
+### Options graphiques
 `[--display-algorithm {patchwork|circo|osage|sfdp|dot|twopi|neato|fdp}]`
 Nom d'un algorithme d'affichage de graphe.
 
@@ -36,7 +43,7 @@ Nom d'un algorithme d'affichage de graphe.
 Taille de la police utilisée pour écrire les noms des nœuds.
 
 
-## TODO: Commande `inverted`
+### TODO: Commande `inverted`
 Construit le graphe des dépendances inverses d'un ensemble donné de fichiers.
 I.e part d'un ensemble donné de fichiers et affiche sur le graphe les fichiers
 qui incluent au moins l'un d'eux.
