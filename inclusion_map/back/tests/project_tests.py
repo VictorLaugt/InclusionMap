@@ -23,8 +23,8 @@ class TargetParserMock(TargetParser):
 class StructuralTestProject(unittest.TestCase):
     def new_project(self, nodes, edges):
         p = Project(InclusionInstructionMatcherMock(), TargetParserMock)
+        p.root_dirs.add(Path())
         p.include_dirs.append(Path())
-        p.root_dirs.append(Path())
 
         for n in nodes:
             p.files.add(Path(str(n)))
