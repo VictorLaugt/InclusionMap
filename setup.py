@@ -9,7 +9,7 @@ with REQUIREMENTS_FILE.open(mode='r') as requirements:
 
 setup(
     name="InclusionMap",
-    version="1.0",
+    version="1.1",
     description=(
         "A tool for generating the inclusion map of a programming project. "
         "Several programming languages are supported."
@@ -25,7 +25,7 @@ setup(
     url="https://github.com/VictorLaugt/InclusionMap",
     license='GPLv3',
 
-    packages=['inclusion_map'],
+    packages=['inclusion_map', 'inclusion_map.back'],
     install_requires=install_requires,
 
     entry_points={
