@@ -22,6 +22,7 @@ setup(
     keywords='dependency graph map programming project tool',
 
     author="Victor Laügt",
+    author_email='victorlaugtdev@gmail.com',
     url="https://github.com/VictorLaugt/InclusionMap",
     license='GPLv3',
 
