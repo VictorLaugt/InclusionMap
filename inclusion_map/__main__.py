@@ -150,6 +150,7 @@ def main():
         project.add_root_directory(rdir)
 
     for idir in include_dirs:
+        project.add_root_directory(idir)
         project.add_include_directory(idir)
 
     project.find_source_files(extensions, ignore_dirs)

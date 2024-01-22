@@ -151,7 +151,8 @@ class Project:
         """
         new_root = new_root.resolve()
         sub_roots = [
-            root for root in self.root_dirs if root.is_relative_to(new_root)]
+            root for root in self.root_dirs if root.is_relative_to(new_root)
+        ]
         self.root_dirs.difference_update(sub_roots)
         self.root_dirs.add(new_root)
 
