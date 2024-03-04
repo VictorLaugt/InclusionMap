@@ -46,6 +46,7 @@ class TestPythonImportMatcher(TestInclusionInstructionMatcher):
             ("from sympy.core.relational import Eq", ("sympy.core.relational",)),
             ("from chess import Board as ChessBoard", ("chess",)),
             ("from front import display, refresh_window", ("front",)),
+            ("from importlib.metadata import version", ("importlib.metadata",)),
         )
 
     def test_match_absolute_import(self):

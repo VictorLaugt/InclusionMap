@@ -69,7 +69,7 @@ class PythonTargetParser(ClassicTargetParser):
 
     @staticmethod
     def target_to_paths(target: str) -> tuple[Path, Path]:
-        path = Path(*target.split('.'))
+        path = Path(*target.split('.'))  #FIXME: bug if "len(path.parts) == 0"
         return (path.with_suffix('.py'), path.joinpath('__init__.py'))
 
     def search_relative_to(self, target: str, relative_to: Iterable[Path]) -> Path | None:

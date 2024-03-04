@@ -66,7 +66,7 @@ class PythonImportMatcher(ClassicInclusionMatcher):
     include_regex_list = (
         re.compile(r'import\s*(?P<targets_block>.*?)\s*;.*'),
         re.compile(r'import\s*(?P<targets_block>.*)'),
-        re.compile(r'from\s*(?P<targets_block>.*?)\s*import.*'),
+        re.compile(r'from\s*(?P<targets_block>.*?)\s*import.*'),  #FIXME: should match "from importlib.metadata import version"
     )
     targets_separator = re.compile('\s*,\s*')
     rename_syntax = re.compile(r'^(?P<target>.*?)\sas.*')
