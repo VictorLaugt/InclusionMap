@@ -64,12 +64,12 @@ class CIncludeMatcher(ClassicInclusionMatcher):
 class PythonImportMatcher(ClassicInclusionMatcher):
     comment_regex_list = (re.compile(r'\s*#.*$'),)
     include_regex_list = (
-        re.compile(r'import\s*(?P<targets_block>.*?)\s*;.*'),
-        re.compile(r'import\s*(?P<targets_block>.*)'),
-        re.compile(r'from\s*(?P<targets_block>.*?)\s*import.*'),  #FIXME: should match "from importlib.metadata import version"
+        re.compile(r'import\s+(?P<targets_block>.+)'),
+        re.compile(r'from\s+(?P<targets_block>.+?)\s+import\s+.*'),
     )
     targets_separator = re.compile('\s*,\s*')
     rename_syntax = re.compile(r'^(?P<target>.*?)\sas.*')
+    line_separator = ';'
 
     @classmethod
     def target_real_name(cls, target: str) -> str:
@@ -79,6 +79,7 @@ class PythonImportMatcher(ClassicInclusionMatcher):
             return target
 
     def targets(self, line):
+        line = line.split(self.line_separator, 1)[0]
         if (targets_block := self.match_targets_block(line)) is not None:
             return [
                 self.target_real_name(target) for target in
