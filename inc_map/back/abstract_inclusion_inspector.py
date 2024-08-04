@@ -1,13 +1,13 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Optional, Iterable, Sequence
+    from typing import Optional, Container, Iterable, Sequence
     from pathlib import Path
 
 import abc
 
 class AbstractInclusionInspector(abc.ABC):
-    def __init__(self, source_files: Sequence[Path], include_dirs: Sequence[Path]) -> None:
+    def __init__(self, source_files: Container[Path], include_dirs: Sequence[Path]) -> None:
         self.source_files = source_files
         self.include_dirs = include_dirs
 

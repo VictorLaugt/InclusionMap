@@ -3,17 +3,14 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pathlib import Path
     from inclusion_map.back import Project
-
-import networkx as nx
-from netgraph import EditableGraph, InteractiveGraph
-from distinctipy import get_colors as get_distinct_colors
-
-__all__ = ('DynamicInclusionMap', )
-
-if TYPE_CHECKING:
     Node = Path
     Label = str
     Color = tuple[float, float, float]
+
+import matplotlib.pyplot as plt
+import networkx as nx
+from netgraph import EditableGraph, InteractiveGraph
+from distinctipy import get_colors as get_distinct_colors
 
 
 def brighten(color: tuple[float, float, float], pastel_factor: float):
@@ -26,15 +23,15 @@ def brighten(color: tuple[float, float, float], pastel_factor: float):
 
 
 def get_node_color(project: Project) -> tuple[dict[Node, Color], dict[Node, Color]]:
-    suffix_to_colors = {path.suffix: None for path in project.files}
+    suffix_to_colors = {path.suffix: None for path in project.source_files}
 
     distinct_colors = get_distinct_colors(len(suffix_to_colors))
     for suffix, color in zip(suffix_to_colors.keys(), distinct_colors):
         suffix_to_colors[suffix] = color
 
     return (
-        {path: brighten(suffix_to_colors[path.suffix], 2.5) for path in project.files},
-        {path: suffix_to_colors[path.suffix] for path in project.files},
+        {path: brighten(suffix_to_colors[path.suffix], 2.5) for path in project.source_files},
+        {path: suffix_to_colors[path.suffix] for path in project.source_files},
     )
 
 
@@ -55,11 +52,11 @@ def normalize_positions(node_positions: dict[Node, tuple[float, float]]):
         )
 
 
-def project_to_graph(project: Project, fontsize: float, layout_algorithm: str = None) -> EditableGraph:
+def show_project_graph(project: Project, fontsize: float, layout_algorithm: str = None) -> EditableGraph:
     edge_list: list[tuple[Node, Node]] = []
     node_labels: dict[Node, Label] = {}
 
-    for path in project.files:
+    for path in project.source_files:
         node_labels[path] = str(project.readable_path(path))
         for required_path in project.dependencies.get_keys(path):
             edge_list.append((required_path, path))
@@ -77,11 +74,12 @@ def project_to_graph(project: Project, fontsize: float, layout_algorithm: str = 
     )
 
     graph = nx.DiGraph()
-    graph.add_nodes_from(project.files)
+    graph.add_nodes_from(project.source_files)
     graph.add_edges_from(edge_list)
     if layout_algorithm:
         node_positions = nx.nx_agraph.graphviz_layout(graph, prog=layout_algorithm)
         normalize_positions(node_positions)
         kwargs['node_layout'] = node_positions
 
-    return EditableGraph(graph, **kwargs)
+    plot_instance = EditableGraph(graph, **kwargs)
+    plt.show()
