@@ -171,7 +171,7 @@ class Project:
                 self.files.add(Path(f))
 
     def find_dependencies(self):
-        """Analyse les instructions d'inclusions présentent dans les fichiers
+        """Analyse les instructions d'inclusions présentes dans les fichiers
         sources du projet pour trouver toutes les dépendances entre eux.
         Pendant l'analyse, lève un warning pour chaque instruction d'inclusion
         faisant référence à un fichier inconnu.
