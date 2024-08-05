@@ -2,7 +2,7 @@ from distutils.core import setup
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-REQUIREMENTS_FILE = HERE.joinpath(Path('inclusion_map', 'requirements.txt'))
+REQUIREMENTS_FILE = HERE.joinpath(Path('inc_map', 'requirements.txt'))
 
 with REQUIREMENTS_FILE.open(mode='r') as requirements:
     install_requires = requirements.read().splitlines()
@@ -26,11 +26,16 @@ setup(
     url="https://github.com/VictorLaugt/InclusionMap",
     license='GPLv3',
 
-    packages=['inclusion_map', 'inclusion_map.back'],
+    packages=[
+        'inc_map',
+        'inc_map.back',
+        'inc_map.back.support_c',
+        'inc_map.back.support_python'
+    ],
     install_requires=install_requires,
 
     entry_points={
-        "console_scripts": ["inclusionmap = inclusion_map.__main__:main"],
+        "console_scripts": ["inclusionmap = inc_map.__main__:main"],
     },
 
     include_package_data=True,

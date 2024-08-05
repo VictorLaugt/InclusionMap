@@ -12,15 +12,8 @@ from inc_map.back.abstract_inclusion_inspector import AbstractInclusionInspector
 from inc_map.back.support_c.include_matcher import IncludeMatcher
 
 
-def warning_not_found(file: Path, instruction: IncludeInstruction) -> None:
-    print(f"target not found : {file}:{instruction.line_n}:{instruction}", file=sys.stderr)
-
-def warning_not_a_header(file: Path, instruction: IncludeInstruction) -> None:
-    print(f"target is not a header : {file}:{instruction.line_n}:{instruction}", file=sys.stderr)
-
-
 class IncludeInspector(AbstractInclusionInspector):
-    def parse_include(self, instruction: IncludeInstruction, file: Path) -> Optional[Path]:
+    def parse_include(self, instruction: IncludeInstruction) -> Optional[Path]:
         included_path = Path(*instruction.included.split('/'))
         return self.search_in_include_dirs(included_path)
 
@@ -32,7 +25,7 @@ class IncludeInspector(AbstractInclusionInspector):
             target = self.parse_include(instruction)
             if target is not None:
                 if target.suffix in ('.c', '.cpp', '.cxx'):
-                    warning_not_a_header(file, instruction)
+                    self.warning("target is not a header", file, instruction)
                 yield target
             else:
-                warning_not_found(file, instruction)
+                self.warning_not_found(file, instruction)

@@ -9,7 +9,7 @@ from pathlib import Path
 
 from inc_map.back.project import ProjectBuilder
 from inc_map.back.support_python.import_inspector import ImportInspector
-# from inc_map.back.support_c ...
+from inc_map.back.support_c.include_inspector import IncludeInspector
 
 from inc_map.front import show_project_graph
 
@@ -99,19 +99,18 @@ def default_ignore_dirs(language: str) -> set[str]:
         return {'__pycache__'}
     raise unsupported_language_error(language)
 
-def inspector_type(language: str) -> Type[AbstractInclusionInspector]:
+def get_inspector_type(language: str) -> Type[AbstractInclusionInspector]:
     if language in ('c', 'c++'):
-        raise NotImplementedError
+        return IncludeInspector
     elif language == 'python':
         return ImportInspector
     raise unsupported_language_error(language)
 
 
 def main():
-    # ---- argument parsing
+    # ---- parse arguments
     args = build_arg_parser().parse_args()
 
-    # ---- argument processing
     if args.extensions:
         extensions = set()
         for ext in args.extensions:
@@ -134,7 +133,7 @@ def main():
     else:
         include_dirs = args.roots
 
-    # ---- project scan
+    # ---- scan the project
     project_builder = ProjectBuilder()
     for rdir in args.roots:
         if not rdir.is_dir():
@@ -149,7 +148,7 @@ def main():
     project = project_builder.build(
         extensions,
         ignored_dir_names,
-        inspector_type(args.language)
+        get_inspector_type(args.language)
     )
 
     if args.simplify:
@@ -157,11 +156,11 @@ def main():
 
     print(project)
 
-    # ---- interactive graph display
+    # ---- display the inclusion map
     if project.is_not_empty():
         show_project_graph(project, args.font_size, args.display_algorithm)
     else:
-        print("No intern inclusion found")
+        print("No internal inclusion found")
 
 
 if __name__ == '__main__':

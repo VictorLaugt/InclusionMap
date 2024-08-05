@@ -2,10 +2,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pathlib import Path
-    from inclusion_map.back import Project
+    from inc_map.back.project import Project
     Node = Path
     Label = str
     Color = tuple[float, float, float]
+
+from inc_map.readable_path import readable_path
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -57,7 +59,7 @@ def show_project_graph(project: Project, fontsize: float, layout_algorithm: str 
     node_labels: dict[Node, Label] = {}
 
     for path in project.source_files:
-        node_labels[path] = str(project.readable_path(path))
+        node_labels[path] = str(readable_path(project.root_dirs, path))
         for required_path in project.dependencies.get_keys(path):
             edge_list.append((required_path, path))
 

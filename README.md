@@ -2,6 +2,7 @@
 
 ## Installation
 `pip install InclusionMap`
+Pour utiliser l'option `--display-algorithm` du programme, il est nécessaire d'installer le paquet `pygraphviz`.
 
 ## Utilisation
 `inclusionmap LIST_OF_DIRECTORIES ... -l PROGRAMMING_LANGUAGE [OPTIONS]`

@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from pathlib import Path
     from inc_map.back.abstract_inclusion_inspector import AbstractInclusionInspector
 
+from inc_map.readable_path import readable_path
 
 class BiMap:
     def __init__(self):
@@ -93,7 +94,7 @@ class ProjectBuilder:
         for d in self.root_dirs:
             for f in walk(d, -1, extensions, ignored_dir_names):
                 source_files.add(f)
-        inspector = InspectorType(source_files, self.include_dirs)
+        inspector = InspectorType(source_files, self.include_dirs, self.root_dirs)
         return Project(inspector, source_files, self.root_dirs)
 
 
@@ -114,10 +115,10 @@ class Project:
 
     def __repr__(self) -> str:
         string_builder = []
-        for file in sorted(self.files, key=lambda file: file.name):
-            readable_file_path = self.readable_path(file)
+        for file in sorted(self.source_files, key=lambda file: file.name):
+            readable_file_path = readable_path(self.root_dirs, file)
             for file_dependency in self.dependencies.get_values(file):
-                readable_dependency_path = self.readable_path(file_dependency)
+                readable_dependency_path = readable_path(self.root_dirs, file_dependency)
                 string_builder.append(
                     f'inclusion : {readable_file_path} -> {readable_dependency_path}'
                 )
@@ -143,8 +144,8 @@ class Project:
                 if (b_dependencies := self.dependencies.get_values(b)):
                     for c in (redundancy := b_dependencies & a_dependencies):
                         print(
-                            f"simplified : {self.readable_path(a)} -> "
-                            f"{self.readable_path(b)} -> {self.readable_path(c)}"
+                            f"simplified : {readable_path(self.root_dirs, a)} -> "
+                            f"{readable_path(self.root_dirs, b)} -> {readable_path(self.root_dirs, c)}"
                         )
                     a_redundant_include.extend(redundancy)
 

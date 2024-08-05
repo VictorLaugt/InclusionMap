@@ -11,10 +11,6 @@ from inc_map.back.abstract_inclusion_inspector import AbstractInclusionInspector
 from inc_map.back.support_python.import_matcher import ImportMatcher
 
 
-def warning_not_found(file: Path, instruction: ImportInstruction | FromImportInstruction) -> None:
-    print(f"target not found : {file}:{instruction.line_n}:{instruction}", file=sys.stderr)
-
-
 class ImportInspector(AbstractInclusionInspector):
     def solve_relative_import_base(self, queue: str, file: Path) -> Optional[Path]:
         back = 0
@@ -35,7 +31,7 @@ class ImportInspector(AbstractInclusionInspector):
             if base is None:
                 return
         else:
-            base = Path(instruction.queue.split('.'))
+            base = Path(*instruction.queue.split('.'))
 
         for h in instruction.heads:
             target = (
@@ -44,7 +40,7 @@ class ImportInspector(AbstractInclusionInspector):
                 self.search_in_include_dirs(base.joinpath('__init__.py'))            # from directory import member
             )
             if target is None:
-                warning_not_found(file, instruction)
+                self.warning_not_found(file, instruction)
             else:
                 yield target
 
@@ -56,7 +52,7 @@ class ImportInspector(AbstractInclusionInspector):
                 self.search_in_include_dirs(p.joinpath('__init__.py'))  # import directory
             )
             if target is None:
-                warning_not_found(file, instruction)
+                self.warning_not_found(file, instruction)
             else:
                 yield target
 

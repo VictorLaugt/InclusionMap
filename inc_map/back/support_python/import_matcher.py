@@ -33,7 +33,7 @@ class ImportInstruction:
     queues: Sequence[str]
 
     def __repr__(self) -> str:
-        return f"import {self.queues}"
+        return f"import {', '.join(self.queues)}"
 
 
 @dataclass
