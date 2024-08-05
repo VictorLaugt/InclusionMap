@@ -70,7 +70,7 @@ def walk(
 class ProjectBuilder:
     def __init__(self):
         self.root_dirs: set[Path] = set()
-        self.include_dirs: list[Path] = []
+        self.include_dirs: set[Path] = set()
 
     def add_root_directory(self, new_root: Path):
         new_root = new_root.resolve()
@@ -81,8 +81,12 @@ class ProjectBuilder:
         self.root_dirs.add(new_root)
 
     def add_include_directory(self, inc_dir: Path):
-        self.add_root_directory(inc_dir)
-        self.include_dirs.append(inc_dir.resolve())
+        inc_dir = inc_dir.resolve()
+        sub_idirs = [
+            idir for idir in self.include_dirs if idir.is_relative_to(inc_dir)
+        ]
+        self.include_dirs.difference_update(sub_idirs)
+        self.include_dirs.add(inc_dir)
 
     def build(
         self,
@@ -94,7 +98,17 @@ class ProjectBuilder:
         for d in self.root_dirs:
             for f in walk(d, -1, extensions, ignored_dir_names):
                 source_files.add(f)
-        inspector = InspectorType(source_files, self.include_dirs, self.root_dirs)
+
+        additional_potential_targets: set[Path] = set()
+        for d in self.include_dirs:
+            for f in walk(d, -1, extensions, ignored_dir_names):
+                additional_potential_targets.add(f)
+
+        inspector = InspectorType(
+            source_files | additional_potential_targets,
+            self.include_dirs,
+            self.root_dirs
+        )
         return Project(inspector, source_files, self.root_dirs)
 
 

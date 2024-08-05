@@ -8,6 +8,8 @@ from dataclasses import dataclass
 import numpy as np
 import re
 
+from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruction
+
 
 REGEX_COMMENT = re.compile(r'//.*\n')
 
@@ -20,7 +22,7 @@ def without_comment(source_code: str) -> str:
 
 
 @dataclass
-class IncludeInstruction:
+class IncludeInstruction(AbstractInclusionInstruction):
     internal: bool
     line_n: int
     included: str

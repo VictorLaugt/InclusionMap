@@ -11,7 +11,7 @@ import sys
 import abc
 
 class AbstractInclusionInspector(abc.ABC):
-    def __init__(self, source_files: Container[Path], include_dirs: Sequence[Path], root_dirs: Collection[Path]) -> None:
+    def __init__(self, source_files: Container[Path], include_dirs: Collection[Path], root_dirs: Collection[Path]) -> None:
         self.root_dirs = root_dirs
         self.source_files = source_files
         self.include_dirs = include_dirs

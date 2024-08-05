@@ -8,17 +8,22 @@ from dataclasses import dataclass
 import numpy as np
 import re
 
+from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruction
+
 
 REGEX_COMMENT = re.compile(r'#.*\n')
 
-LST = r'\w+([^\S\n]*,[^\S\n]*\w+)*'          # comma-separated list of words on a single line
-PARLST = r'\(\s*\w+(\s*,\s*\w+)*\s*,?\s*\)'  # parenthesized comma-separated list of words on multiple lines
+LST = r'\w+([^\S\n]*,[^\S\n]*\w+)*'  # comma-separated list of words on a single line
+MULTI_LINE_LST = r'\w+(\s*,\s*\w+)*\s*,?'    # comma-separated list of words on multiple lines
 
 REGEX_IMPORT = re.compile(
     fr'\nimport[^\S\n]+(?P<queues>{LST})'
 )
-REGEX_FROM_IMPORT = re.compile(
-    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>({LST})|({PARLST}))'
+REGEX_FROM_IMPORT_LST = re.compile(
+    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>{LST})'
+)
+REGEX_FROM_IMPORT_PARLST = re.compile(
+    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+\(\s*(?P<heads>{MULTI_LINE_LST})\s*\)'
 )
 
 
@@ -27,7 +32,7 @@ def without_comment(source_code: str) -> str:
 
 
 @dataclass
-class ImportInstruction:
+class ImportInstruction(AbstractInclusionInstruction):
     """import `queues`"""
     line_n: int
     queues: Sequence[str]
@@ -37,7 +42,7 @@ class ImportInstruction:
 
 
 @dataclass
-class FromImportInstruction:
+class FromImportInstruction(AbstractInclusionInstruction):
     """from `queue` import `heads`"""
     line_n: int
     queue: str
@@ -70,7 +75,13 @@ class ImportMatcher:
             )
 
     def find_from_import_instructions(self) -> Iterable[FromImportInstruction]:
-        for from_import_match in REGEX_FROM_IMPORT.finditer(self.source_code):
+        for from_import_match in REGEX_FROM_IMPORT_LST.finditer(self.source_code):
+            yield FromImportInstruction(
+                line_n=self.line_indices[from_import_match.start()]+1,
+                queue=from_import_match.group('queue'),
+                heads=[h.strip() for h in from_import_match.group('heads').split(',')]
+            )
+        for from_import_match in REGEX_FROM_IMPORT_PARLST.finditer(self.source_code):
             yield FromImportInstruction(
                 line_n=self.line_indices[from_import_match.start()]+1,
                 queue=from_import_match.group('queue'),
