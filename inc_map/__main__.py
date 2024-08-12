@@ -70,7 +70,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument('--font-size',
         default=7.,
         type=float,
-        help="Taille de la police utilisée pour écrire les noms des fichiers."
+        help=(
+            "Taille de la police utilisée pour écrire les noms des fichiers "
+            "(7 par défaut)."
+        )
     )
 
     return parser
