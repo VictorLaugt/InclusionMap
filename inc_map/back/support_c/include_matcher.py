@@ -13,8 +13,8 @@ from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruc
 
 REGEX_COMMENT = re.compile(r'//.*\n')
 
-REGEX_LIBRARY_INCLUDE = re.compile(r'\n#\s*include\s*"(?P<included>.*)"')
-REGEX_INTERNAL_INCLUDE = re.compile(r'\n#\s*include\s*<(?P<included>.*)>')
+REGEX_INTERNAL_INCLUDE = re.compile(r'\n#\s*include\s*"(?P<included>.*)"')
+REGEX_LIBRARY_INCLUDE  = re.compile(r'\n#\s*include\s*<(?P<included>.*)>')
 
 
 def without_comment(source_code: str) -> str:
