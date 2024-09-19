@@ -6,12 +6,20 @@ if TYPE_CHECKING:
 
 import argparse
 from pathlib import Path
+import re
 
 from inc_map.back.project import ProjectBuilder
 from inc_map.back.support_python.import_inspector import ImportInspector
 from inc_map.back.support_c.include_inspector import IncludeInspector
 
 from inc_map.front import show_project_graph
+
+
+def arg_checker_group_regex(arg: str) -> re.Pattern:
+    try:
+        return re.compile(arg)
+    except re.error as err:
+        raise argparse.ArgumentTypeError(err.args[0])
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -74,6 +82,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help=(
             "Taille de la police utilisée pour écrire les noms des fichiers "
             "(7 par défaut)."
+        )
+    )
+    parser.add_argument('--groups', '-g',
+        nargs='*',
+        type=arg_checker_group_regex,
+        help=(
+            "Regex des noms de fichiers pour chaque groupe de couleur (par défaut, "
+            "groupe par extensions)"
         )
     )
 
@@ -163,7 +179,7 @@ def main():
     # ---- display the inclusion map
     if project.is_not_empty():
         layout_algorithm = None if args.display_algorithm == "default" else args.display_algorithm
-        show_project_graph(project, args.font_size, layout_algorithm)
+        show_project_graph(project, args.font_size, args.groups, layout_algorithm)
     else:
         print("No internal inclusion found")
 
