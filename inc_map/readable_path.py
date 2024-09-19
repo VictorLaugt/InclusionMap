@@ -2,7 +2,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Collection
-    from pathlib import Path
+
+from pathlib import Path
 
 def readable_path(root_dirs: Collection[Path], file: Path) -> Path:
     for root in root_dirs:
