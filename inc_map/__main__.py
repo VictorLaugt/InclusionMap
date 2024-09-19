@@ -61,7 +61,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
         )
     )
     parser.add_argument('--display-algorithm',
-        choices=('patchwork', 'circo', 'osage', 'sfdp', 'dot', 'twopi', 'neato', 'fdp'),
+        choices=('default', 'patchwork', 'circo', 'osage', 'sfdp', 'dot', 'twopi', 'neato', 'fdp'),
+        default='dot',
         help=(
             "Nom de l'algorithme permettant de déterminer les positions des "
             "noeuds du graphe."
@@ -161,7 +162,8 @@ def main():
 
     # ---- display the inclusion map
     if project.is_not_empty():
-        show_project_graph(project, args.font_size, args.display_algorithm)
+        layout_algorithm = None if args.display_algorithm == "default" else args.display_algorithm
+        show_project_graph(project, args.font_size, layout_algorithm)
     else:
         print("No internal inclusion found")
 
