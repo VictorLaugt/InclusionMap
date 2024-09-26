@@ -37,7 +37,7 @@ class IncludeMatcher:
     def __init__(self, source_code: str) -> None:
         source_code = without_comment(f"\n{source_code}\n")
 
-        line_indices = np.full(len(source_code), -1, dtype=np.uint32)
+        line_indices = np.empty(len(source_code), dtype=np.uint32)
         new_line_count = 0
         for i, c in enumerate(source_code):
             if c == '\n':
