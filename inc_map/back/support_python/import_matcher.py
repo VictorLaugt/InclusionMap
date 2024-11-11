@@ -20,7 +20,7 @@ REGEX_IMPORT = re.compile(
     fr'\nimport[^\S\n]+(?P<queues>{LST})'
 )
 REGEX_FROM_IMPORT_LST = re.compile(
-    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>{LST})'
+    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>\*|({LST}))'
 )
 REGEX_FROM_IMPORT_PARLST = re.compile(
     fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+\(\s*(?P<heads>{MULTI_LINE_LST})\s*\)'
