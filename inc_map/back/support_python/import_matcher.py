@@ -13,21 +13,28 @@ from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruc
 
 REGEX_COMMENT = re.compile(r'#.*\n')
 
-WORD = r'\w+'  # non-empty sequence of letters
-DOT_WORD = r'[\w\.]+'  # non-empty sequence of letters or dots
+SPACE = r'[^\S\n]*'  # sequence of spacing characters (excluding line break)
+MULTI_LINE_SPACE = r'\s*'  # sequence of spacing characters (inclucing line break)
 
-DOT_WORD_LST = fr'{DOT_WORD}([^\S\n]*,[^\S\n]*{DOT_WORD})*'  # comma-separated list of dotted words on a single line
-WORD_LST = fr'{WORD}([^\S\n]*,[^\S\n]*{WORD})*'  # comma-separated list of words on a single line
-MULTI_LINE_WORD_LST = fr'{WORD}(\s*,\s*{WORD})*\s*,?'  # comma-separated list of words on multiple lines
+WORD = r'\w+'  # non-empty sequence of letters
+DOTTED_WORD = r'[\w\.]+'  # non-empty sequence of letters or dots
+
+HEAD = fr'{WORD}({SPACE}as{SPACE}{WORD})?'
+D_HEAD = fr'{DOTTED_WORD}({SPACE}as{SPACE}{WORD})?'
+ML_HEAD = fr'{WORD}({MULTI_LINE_SPACE}as{MULTI_LINE_SPACE}{WORD})?'
+
+HEAD_LST = fr'{HEAD}({SPACE},{SPACE}{HEAD})*'  # comma-separated list of heads on a single line
+DOTTED_HEAD_LST = fr'{D_HEAD}({SPACE},{SPACE}{D_HEAD})*'  # comma-separated list of dotted heads on a single line
+HEAD_MULTI_LINE_LST = fr'{ML_HEAD}({MULTI_LINE_SPACE},{MULTI_LINE_SPACE}{ML_HEAD})*{MULTI_LINE_SPACE},?'  # comma-separated list of heads on multiple lines
 
 REGEX_IMPORT = re.compile(
-    fr'\nimport[^\S\n]+(?P<queues>{DOT_WORD_LST})'
+    fr'\nimport[^\S\n]+(?P<queues>{DOTTED_HEAD_LST})'
 )
 REGEX_FROM_IMPORT_LST = re.compile(
-    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>\*|({WORD_LST}))'
+    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>\*|({HEAD_LST}))'
 )
 REGEX_FROM_IMPORT_PARLST = re.compile(
-    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+\(\s*(?P<heads>{MULTI_LINE_WORD_LST})\s*\)'
+    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+\(\s*(?P<heads>{HEAD_MULTI_LINE_LST})\s*\)'
 )
 
 
