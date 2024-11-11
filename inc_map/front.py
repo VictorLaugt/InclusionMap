@@ -78,8 +78,8 @@ def normalize_positions(node_positions: dict[Node, tuple[float, float]]):
     for node in node_positions.keys():
         x, y = node_positions[node]
         node_positions[node] = (
-            (x - x_min) / (x_max - x_min),
-            (y - y_min) / (y_max - y_min),
+            (x - x_min) / (x_max - x_min + 1e-6),
+            (y - y_min) / (y_max - y_min + 1e-6),
         )
 
 

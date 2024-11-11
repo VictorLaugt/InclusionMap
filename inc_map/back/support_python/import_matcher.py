@@ -13,17 +13,21 @@ from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruc
 
 REGEX_COMMENT = re.compile(r'#.*\n')
 
-LST = r'\w+([^\S\n]*,[^\S\n]*\w+)*'  # comma-separated list of words on a single line
-MULTI_LINE_LST = r'\w+(\s*,\s*\w+)*\s*,?'    # comma-separated list of words on multiple lines
+WORD = r'\w+'  # non-empty sequence of letters
+DOT_WORD = r'[\w\.]+'  # non-empty sequence of letters or dots
+
+DOT_WORD_LST = fr'{DOT_WORD}([^\S\n]*,[^\S\n]*{DOT_WORD})*'  # comma-separated list of dotted words on a single line
+WORD_LST = fr'{WORD}([^\S\n]*,[^\S\n]*{WORD})*'  # comma-separated list of words on a single line
+MULTI_LINE_WORD_LST = fr'{WORD}(\s*,\s*{WORD})*\s*,?'  # comma-separated list of words on multiple lines
 
 REGEX_IMPORT = re.compile(
-    fr'\nimport[^\S\n]+(?P<queues>{LST})'
+    fr'\nimport[^\S\n]+(?P<queues>{DOT_WORD_LST})'
 )
 REGEX_FROM_IMPORT_LST = re.compile(
-    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>\*|({LST}))'
+    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+(?P<heads>\*|({WORD_LST}))'
 )
 REGEX_FROM_IMPORT_PARLST = re.compile(
-    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+\(\s*(?P<heads>{MULTI_LINE_LST})\s*\)'
+    fr'\nfrom[^\S\n]+(?P<queue>[\.\w]+?)[^\S\n]+import[^\S\n]+\(\s*(?P<heads>{MULTI_LINE_WORD_LST})\s*\)'
 )
 
 
@@ -70,20 +74,20 @@ class ImportMatcher:
     def find_import_instructions(self) -> Iterable[ImportInstruction]:
         for import_match in REGEX_IMPORT.finditer(self.source_code):
             yield ImportInstruction(
-                line_n=self.line_indices[import_match.start()]+1,
+                line_n=self.line_indices[import_match.start()],
                 queues=[q.strip() for q in import_match.group('queues').split(',')]
             )
 
     def find_from_import_instructions(self) -> Iterable[FromImportInstruction]:
         for from_import_match in REGEX_FROM_IMPORT_LST.finditer(self.source_code):
             yield FromImportInstruction(
-                line_n=self.line_indices[from_import_match.start()]+1,
+                line_n=self.line_indices[from_import_match.start()],
                 queue=from_import_match.group('queue'),
                 heads=[h.strip() for h in from_import_match.group('heads').split(',')]
             )
         for from_import_match in REGEX_FROM_IMPORT_PARLST.finditer(self.source_code):
             yield FromImportInstruction(
-                line_n=self.line_indices[from_import_match.start()]+1,
+                line_n=self.line_indices[from_import_match.start()],
                 queue=from_import_match.group('queue'),
                 heads=[h.strip() for h in from_import_match.group('heads').split(',')]
             )
