@@ -27,6 +27,9 @@ HEAD_LST = fr'{HEAD}({SPACE},{SPACE}{HEAD})*'  # comma-separated list of heads o
 DOTTED_HEAD_LST = fr'{D_HEAD}({SPACE},{SPACE}{D_HEAD})*'  # comma-separated list of dotted heads on a single line
 HEAD_MULTI_LINE_LST = fr'{ML_HEAD}({MULTI_LINE_SPACE},{MULTI_LINE_SPACE}{ML_HEAD})*{MULTI_LINE_SPACE},?'  # comma-separated list of heads on multiple lines
 
+REGEX_QUEUE = re.compile(
+    fr'(?P<queue>{DOTTED_WORD})({SPACE}as{SPACE}{WORD})?'
+)
 REGEX_IMPORT = re.compile(
     fr'\nimport[^\S\n]+(?P<queues>{DOTTED_HEAD_LST})'
 )
@@ -80,9 +83,12 @@ class ImportMatcher:
 
     def find_import_instructions(self) -> Iterable[ImportInstruction]:
         for import_match in REGEX_IMPORT.finditer(self.source_code):
+            queues = []
+            for q in import_match.group('queues').split(','):
+                queues.append(REGEX_QUEUE.fullmatch(q.strip()).group('queue'))
             yield ImportInstruction(
                 line_n=self.line_indices[import_match.start()],
-                queues=[q.strip() for q in import_match.group('queues').split(',')]
+                queues=queues
             )
 
     def find_from_import_instructions(self) -> Iterable[FromImportInstruction]:
