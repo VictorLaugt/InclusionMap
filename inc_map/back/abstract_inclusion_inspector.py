@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Optional, Container, Iterable, Collection, Sequence
+    from typing import Optional, Container, Iterable, Collection
     from pathlib import Path
     from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruction
 

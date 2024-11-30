@@ -1,14 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import TypeVar
+    from typing import TypeAlias, TypeVar, Optional
     from pathlib import Path
     from inc_map.back.project import Project
     from re import Pattern
     K = TypeVar('K')
-    Node = Path
-    Label = str
-    Color = tuple[float, float, float]
+    Node: TypeAlias = Path
+    Label: TypeAlias = str
+    Color: TypeAlias = tuple[float, float, float]
 
 from inc_map.readable_path import readable_path
 
@@ -87,7 +87,7 @@ def show_project_graph(
     project: Project,
     fontsize: float,
     group_regexes: list[Pattern],
-    layout_algorithm: str = None,
+    layout_algorithm: Optional[str] = None,
 ) -> EditableGraph:
     edge_list: list[tuple[Node, Node]] = []
     node_labels: dict[Node, Label] = {}

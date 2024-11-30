@@ -4,7 +4,6 @@ if TYPE_CHECKING:
     from typing import Optional, Iterable
     from inc_map.back.support_python.import_matcher import ImportInstruction, FromImportInstruction
 
-import sys
 from pathlib import Path
 
 from inc_map.back.abstract_inclusion_inspector import AbstractInclusionInspector
