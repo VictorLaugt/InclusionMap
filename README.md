@@ -2,7 +2,6 @@
 
 ## Installation
 `pip install InclusionMap`
-Pour utiliser l'option `--display-algorithm` du programme, il est nécessaire d'installer le paquet `pygraphviz`.
 
 ## Utilisation
 `inclusionmap LIST_OF_DIRECTORIES ... -l PROGRAMMING_LANGUAGE [OPTIONS]`
@@ -39,6 +38,7 @@ Si x inclut y, y inclut z et x inclut z, alors n'affiche pas le fait que x inclu
 ### Options graphiques
 `[--display-algorithm {patchwork|circo|osage|sfdp|dot|twopi|neato|fdp}]`
 Nom d'un algorithme d'affichage de graphe.
+Pour utiliser un autre algorithme d'affichage que `default`, il est nécessaire d'installer le paquet [pygraphviz](https://pygraphviz.github.io/documentation/stable/install.html).
 
 `[--font-size INTEGER]`
 Taille de la police utilisée pour écrire les noms des nœuds.
