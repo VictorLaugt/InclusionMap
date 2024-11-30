@@ -1,18 +1,29 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Type
+    from typing import Type, Optional
     from inc_map.back.abstract_inclusion_inspector import AbstractInclusionInspector
 
 import argparse
 from pathlib import Path
 import re
 
+import importlib
+import sys
+
 from inc_map.back.project import ProjectBuilder
 from inc_map.back.support_python.import_inspector import ImportInspector
 from inc_map.back.support_c.include_inspector import IncludeInspector
 
 from inc_map.front import show_project_graph
+
+
+def check_dependency(module_name: str) -> bool:
+    try:
+        importlib.import_module(module_name)
+        return True
+    except ImportError:
+        return False
 
 
 def arg_checker_group_regex(arg: str) -> re.Pattern:
@@ -119,12 +130,27 @@ def default_ignore_dirs(language: str) -> set[str]:
         return {'__pycache__'}
     raise unsupported_language_error(language)
 
+
 def get_inspector_type(language: str) -> Type[AbstractInclusionInspector]:
     if language in ('c', 'c++'):
         return IncludeInspector
     elif language == 'python':
         return ImportInspector
     raise unsupported_language_error(language)
+
+
+def get_display_algorithm_name(name: str) -> Optional[str]:
+    if name != "default":
+        if check_dependency("pygraphviz"):
+            return name
+        else:
+            print((
+                    "pygraphviz is not installed, switching to the default display "
+                    "algorithm. (install pygraphviz: "
+                    "https://pygraphviz.github.io/documentation/stable/install.html)"
+                ),
+                file=sys.stderr
+            )
 
 
 def main():
@@ -178,7 +204,7 @@ def main():
 
     # ---- display the inclusion map
     if project.is_not_empty():
-        layout_algorithm = None if args.display_algorithm == "default" else args.display_algorithm
+        layout_algorithm = get_display_algorithm_name(args.display_algorithm)
         show_project_graph(project, args.font_size, args.groups, layout_algorithm)
     else:
         print("No internal inclusion found")
