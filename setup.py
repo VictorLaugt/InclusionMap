@@ -9,7 +9,7 @@ with REQUIREMENTS_FILE.open(mode='r') as requirements:
 
 setup(
     name="InclusionMap",
-    version="1.5",
+    version="1.5.0",
     description=(
         "A tool for generating the inclusion map of a programming project. "
         "Several programming languages are supported."
