@@ -1,8 +1,8 @@
 from distutils.core import setup
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
-REQUIREMENTS_FILE = HERE.joinpath(Path('inc_map', 'requirements.txt'))
+REPOSITORY = Path(__file__).resolve().parent
+REQUIREMENTS_FILE = REPOSITORY.joinpath('requirements.txt')
 
 with REQUIREMENTS_FILE.open(mode='r') as requirements:
     install_requires = requirements.read().splitlines()
