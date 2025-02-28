@@ -17,7 +17,7 @@ setup(
     long_description=(
         "A tool for generating the inclusion map of a programming project. "
         "Several programming languages are supported."
-    )
+    ),
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
@@ -25,7 +25,7 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
-        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.13'
     ],
     keywords='dependency graph map programming project tool',
 
