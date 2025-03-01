@@ -1,5 +1,8 @@
 # InclusionMap
 
+![Tests](https://github.com/VictorLaugt/InclusionMap/actions/workflows/python-app.yml/badge.svg)
+
+
 ## Installation
 `pip install InclusionMap`
 
