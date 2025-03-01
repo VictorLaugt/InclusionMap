@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 
 from inc_map.readable_path import readable_path
 
+
 class BiMap:
     def __init__(self):
         self._key_to_values: dict[Hashable, set[Hashable]] = {}

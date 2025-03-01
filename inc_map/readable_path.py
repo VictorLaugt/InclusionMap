@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 
 from pathlib import Path
 
+
 def readable_path(root_dirs: Collection[Path], file: Path) -> Path:
     for root in root_dirs:
         if file.is_relative_to(root):

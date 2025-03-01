@@ -10,6 +10,7 @@ from inc_map.readable_path import readable_path
 import sys
 import abc
 
+
 class AbstractInclusionInspector(abc.ABC):
     def __init__(self, source_files: Container[Path], include_dirs: Collection[Path], root_dirs: Collection[Path]) -> None:
         self.root_dirs = root_dirs
