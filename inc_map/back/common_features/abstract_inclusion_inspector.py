@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Container, Iterable, Collection
     from pathlib import Path
-    from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruction
+    from inc_map.back.common_features.abstract_inclusion_instruction import AbstractInclusionInstruction
 
 from inc_map.readable_path import readable_path
 

@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import numpy as np
 import re
 
-from inc_map.back.abstract_inclusion_instruction import AbstractInclusionInstruction
+from inc_map.back.common_features.abstract_inclusion_instruction import AbstractInclusionInstruction
 
 
 REGEX_COMMENT = re.compile(r'//.*\n')

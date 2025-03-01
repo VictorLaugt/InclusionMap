@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 import sys
 from pathlib import Path
 
-from inc_map.back.abstract_inclusion_inspector import AbstractInclusionInspector
+from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 from inc_map.back.support_c.include_matcher import IncludeMatcher
 
 

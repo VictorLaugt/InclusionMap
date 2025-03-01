@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Type, Optional
-    from inc_map.back.abstract_inclusion_inspector import AbstractInclusionInspector
+    from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 
 import argparse
 from pathlib import Path
