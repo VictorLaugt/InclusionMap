@@ -3,8 +3,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Iterable, Sequence
 
-from dataclasses import dataclass
-
 import numpy as np
 import re
 
@@ -45,24 +43,30 @@ def without_comment(source_code: str) -> str:
     return REGEX_COMMENT.sub('\n', source_code)
 
 
-@dataclass
 class ImportInstruction(AbstractInclusionInstruction):
     """import `queues`"""
-    line_n: int
-    queues: Sequence[str]
+    def __init__(self, line_n: int, queues: Sequence[str]) -> None:
+        self.line_n = line_n
+        self.queues = queues
 
-    def __repr__(self) -> str:
+    def code_location(self) -> str:
+        return str(self.line_n)
+
+    def code_repr(self) -> str:
         return f"import {', '.join(self.queues)}"
 
 
-@dataclass
 class FromImportInstruction(AbstractInclusionInstruction):
     """from `queue` import `heads`"""
-    line_n: int
-    queue: str
-    heads: Sequence[str]
+    def __init__(self, line_n: int, queue: str, heads: Sequence[str]) -> None:
+        self.line_n = line_n
+        self.queue = queue
+        self.heads = heads
 
-    def __repr__(self) -> str:
+    def code_location(self):
+        return str(self.line_n)
+
+    def code_repr(self):
         return f"from {self.queue} import {', '.join(self.heads)}"
 
 

@@ -25,7 +25,7 @@ class AbstractInclusionInspector(abc.ABC):
     ) -> None:
         print((
                 f"{message} : {readable_path(self.root_dirs, file)}:"
-                f"{instruction.line_n}: {instruction}"
+                f"{instruction.code_location()}: {instruction.code_repr()}"
             ), file=sys.stderr
         )
 

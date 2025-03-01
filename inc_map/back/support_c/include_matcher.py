@@ -3,8 +3,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Iterable
 
-from dataclasses import dataclass
-
 import numpy as np
 import re
 
@@ -21,13 +19,16 @@ def without_comment(source_code: str) -> str:
     return REGEX_COMMENT.sub('\n', source_code)
 
 
-@dataclass
 class IncludeInstruction(AbstractInclusionInstruction):
-    internal: bool
-    line_n: int
-    included: str
+    def __init__(self, internal: bool, line_n: int, included: str) -> None:
+        self.internal = internal
+        self.line_n = line_n
+        self.included = included
 
-    def __repr__(self) -> str:
+    def code_location(self) -> str:
+        return str(self.line_n)
+
+    def code_repr(self) -> str:
         if self.internal:
             return f'#include "{self.included}"'
         return f'#include <{self.included}>'

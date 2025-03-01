@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import abc
 
 
-@dataclass
 class AbstractInclusionInstruction(abc.ABC):
-    line_n: int
+    @abc.abstractmethod
+    def code_location(self) -> str:
+        pass
 
     @abc.abstractmethod
-    def __repr__(self) -> str:
+    def code_repr(self) -> str:
         pass
