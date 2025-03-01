@@ -54,6 +54,3 @@ Fichiers de départ à partir desquels on parcourt les dépendances inverses.
 
 `[--max-depth INTEGER]`
 Profondeur maximale des nœuds apparaissant sur le graphe (Infinie par défaut).
-
-
-### TODO: ajouter le support des notebooks
