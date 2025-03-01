@@ -20,7 +20,7 @@ class AbstractInclusionInspector(abc.ABC):
 
     def warning(
         self,
-        message:str,
+        message: str,
         file: Path,
         instruction: AbstractInclusionInstruction
     ) -> None:
