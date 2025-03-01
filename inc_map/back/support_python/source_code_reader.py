@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import abc
-
 import ijson
+import abc
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

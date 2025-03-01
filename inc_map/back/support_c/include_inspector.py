@@ -1,14 +1,14 @@
 from __future__ import annotations
-from pathlib import Path
-from typing import TYPE_CHECKING, Iterable
-if TYPE_CHECKING:
-    from typing import Optional
-    from inc_map.back.support_c.include_matcher import IncludeInstruction
 
 from pathlib import Path
 
 from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 from inc_map.back.support_c.include_matcher import IncludeMatcher
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Optional, Iterable
+    from inc_map.back.support_c.include_matcher import IncludeInstruction
 
 
 class IncludeInspector(AbstractInclusionInspector):

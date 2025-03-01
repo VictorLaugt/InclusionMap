@@ -1,14 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import Optional, Iterable
-    from inc_map.back.support_python.import_matcher import ImportInstruction, FromImportInstruction
 
 from pathlib import Path
 
 from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 from inc_map.back.support_python.import_matcher import ImportMatcher
 from inc_map.back.support_python.source_code_reader import StandardPythonFileReader, PythonNotebookReader
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Optional, Iterable
+    from inc_map.back.support_python.import_matcher import ImportInstruction, FromImportInstruction
 
 
 class ImportInspector(AbstractInclusionInspector):

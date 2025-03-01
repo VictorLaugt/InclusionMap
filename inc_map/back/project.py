@@ -1,11 +1,12 @@
 from __future__ import annotations
+
+from inc_map.readable_path import readable_path
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Type, Iterator, Iterable, Hashable
     from pathlib import Path
     from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
-
-from inc_map.readable_path import readable_path
 
 
 class BiMap:

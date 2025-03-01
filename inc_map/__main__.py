@@ -1,8 +1,4 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import Type, Optional
-    from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 
 import argparse
 from pathlib import Path
@@ -16,6 +12,11 @@ from inc_map.back.support_python.import_inspector import ImportInspector
 from inc_map.back.support_c.include_inspector import IncludeInspector
 
 from inc_map.front import show_project_graph
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Type, Optional
+    from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 
 
 def check_dependency(module_name: str) -> bool:

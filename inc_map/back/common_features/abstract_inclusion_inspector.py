@@ -1,14 +1,15 @@
 from __future__ import annotations
+
+import sys
+import abc
+
+from inc_map.readable_path import readable_path
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Optional, Container, Iterable, Collection
     from pathlib import Path
     from inc_map.back.common_features.abstract_inclusion_instruction import AbstractInclusionInstruction
-
-from inc_map.readable_path import readable_path
-
-import sys
-import abc
 
 
 class AbstractInclusionInspector(abc.ABC):
@@ -45,4 +46,3 @@ class AbstractInclusionInspector(abc.ABC):
     @abc.abstractmethod
     def find_dependencies(self, file: Path) -> Iterable[Path]:
         pass
-

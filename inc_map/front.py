@@ -1,4 +1,12 @@
 from __future__ import annotations
+
+from inc_map.readable_path import readable_path
+
+import matplotlib.pyplot as plt
+import networkx as nx
+from netgraph import EditableGraph, InteractiveGraph
+from distinctipy import get_colors as get_distinct_colors
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import TypeAlias, TypeVar, Optional
@@ -9,13 +17,6 @@ if TYPE_CHECKING:
     Node: TypeAlias = Path
     Label: TypeAlias = str
     Color: TypeAlias = tuple[float, float, float]
-
-from inc_map.readable_path import readable_path
-
-import matplotlib.pyplot as plt
-import networkx as nx
-from netgraph import EditableGraph, InteractiveGraph
-from distinctipy import get_colors as get_distinct_colors
 
 
 def brighten(color: tuple[float, float, float], pastel_factor: float):
@@ -120,5 +121,6 @@ def show_project_graph(
         normalize_positions(node_positions)
         kwargs['node_layout'] = node_positions
 
+    # plot_instance = InteractiveGraph(graph, **kwargs)
     plot_instance = EditableGraph(graph, **kwargs)
     plt.show()
