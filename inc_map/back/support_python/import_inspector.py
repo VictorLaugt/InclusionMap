@@ -64,8 +64,8 @@ class ImportInspector(AbstractInclusionInspector):
         else:
             reader = StandardPythonFileReader(file)
 
-        for cell_n, code in reader.iter_code_cells():
-            import_matcher = ImportMatcher(cell_n, code)
+        for cell_n, source_code in reader.iter_code_cells():
+            import_matcher = ImportMatcher(cell_n, source_code)
 
             for instruction in import_matcher.find_import_instructions():
                 yield from self.parse_import(instruction, file)

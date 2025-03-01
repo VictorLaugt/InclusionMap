@@ -31,6 +31,6 @@ class PythonNotebookReader(AbstractPythonFileReader):
     def iter_code_cells(self) -> Iterable[tuple[int, str]]:
         with self.file.open(mode='r', encoding='utf-8') as f:
             for i, cell in enumerate(ijson.items(f, 'cells.item'), start=1):
-                code = cell.get('source')
-                if cell.get('cell_type') == 'code' and code is not None:
-                    yield i, code
+                code_lines = cell.get('source')
+                if cell.get('cell_type') == 'code' and code_lines is not None:
+                    yield i, ''.join(code_lines)
