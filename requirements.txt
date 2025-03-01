@@ -3,3 +3,4 @@ matplotlib>=3.8.2
 netgraph>=4.13.2
 networkx>=3.2.1
 numpy>=2.0.1
+ijson>=3.3.0

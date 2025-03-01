@@ -119,7 +119,7 @@ def default_extension_set(language: str) -> set[str]:
     if language in ('c', 'c++'):
         return {'.c', '.cpp', '.h', '.hpp'}
     elif language == 'python':
-        return {'.py'}
+        return {'.py', '.ipynb'}
     raise unsupported_language_error(language)
 
 

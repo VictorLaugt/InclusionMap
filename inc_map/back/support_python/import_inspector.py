@@ -8,6 +8,7 @@ from pathlib import Path
 
 from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 from inc_map.back.support_python.import_matcher import ImportMatcher
+from inc_map.back.support_python.source_code_reader import StandardPythonFileReader, PythonNotebookReader
 
 
 class ImportInspector(AbstractInclusionInspector):
@@ -57,10 +58,15 @@ class ImportInspector(AbstractInclusionInspector):
 
 
     def find_dependencies(self, file: Path) -> Iterable[Path]:
-        with file.open(mode='r') as f:
-            import_matcher = ImportMatcher(f.read())
+        if file.suffix == '.ipynb':
+            reader = PythonNotebookReader(file)
+        else:
+            reader = StandardPythonFileReader(file)
 
-        for instruction in import_matcher.find_import_instructions():
-            yield from self.parse_import(instruction, file)
-        for instruction in import_matcher.find_from_import_instructions():
-            yield from self.parse_from_import(instruction, file)
+        for cell_n, code in reader.iter_code_cells():
+            import_matcher = ImportMatcher(cell_n, code)
+
+            for instruction in import_matcher.find_import_instructions():
+                yield from self.parse_import(instruction, file)
+            for instruction in import_matcher.find_from_import_instructions():
+                yield from self.parse_from_import(instruction, file)

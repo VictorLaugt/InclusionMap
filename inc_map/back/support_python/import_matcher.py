@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Iterable, Sequence
+    from typing import Iterable, Sequence, Optional
 
 import numpy as np
 import re
@@ -43,14 +43,21 @@ def without_comment(source_code: str) -> str:
     return REGEX_COMMENT.sub('\n', source_code)
 
 
+def code_location(cell_n: Optional[int], line_n: int) -> str:
+    if cell_n is not None:
+        return f"(cell {cell_n}):{line_n}"
+    return str(line_n)
+
+
 class ImportInstruction(AbstractInclusionInstruction):
     """import `queues`"""
-    def __init__(self, line_n: int, queues: Sequence[str]) -> None:
+    def __init__(self, cell_n: Optional[int], line_n: int, queues: Sequence[str]) -> None:
+        self.cell_n = cell_n
         self.line_n = line_n
         self.queues = queues
 
     def code_location(self) -> str:
-        return str(self.line_n)
+        return code_location(self.cell_n, self.line_n)
 
     def code_repr(self) -> str:
         return f"import {', '.join(self.queues)}"
@@ -58,20 +65,21 @@ class ImportInstruction(AbstractInclusionInstruction):
 
 class FromImportInstruction(AbstractInclusionInstruction):
     """from `queue` import `heads`"""
-    def __init__(self, line_n: int, queue: str, heads: Sequence[str]) -> None:
+    def __init__(self, cell_n: Optional[int], line_n: int, queue: str, heads: Sequence[str]) -> None:
+        self.cell_n = cell_n
         self.line_n = line_n
         self.queue = queue
         self.heads = heads
 
-    def code_location(self):
-        return str(self.line_n)
+    def code_location(self) -> str:
+        return code_location(self.cell_n, self.line_n)
 
-    def code_repr(self):
+    def code_repr(self) -> str:
         return f"from {self.queue} import {', '.join(self.heads)}"
 
 
 class ImportMatcher:
-    def __init__(self, source_code: str) -> None:
+    def __init__(self, cell_n: Optional[int], source_code: str) -> None:
         source_code = without_comment(f"\n{source_code}\n")
 
         line_indices = np.empty(len(source_code), dtype=np.uint32)
@@ -81,6 +89,7 @@ class ImportMatcher:
                 new_line_count += 1
                 line_indices[i] = new_line_count
 
+        self.cell_n = cell_n
         self.source_code = source_code
         self.line_indices = line_indices
 
@@ -91,6 +100,7 @@ class ImportMatcher:
             for q in import_match.group('queues').split(','):
                 queues.append(REGEX_QUEUE.fullmatch(q.strip()).group('queue'))
             yield ImportInstruction(
+                cell_n=self.cell_n,
                 line_n=self.line_indices[import_match.start()],
                 queues=queues
             )
@@ -98,12 +108,14 @@ class ImportMatcher:
     def find_from_import_instructions(self) -> Iterable[FromImportInstruction]:
         for from_import_match in REGEX_FROM_IMPORT_LST.finditer(self.source_code):
             yield FromImportInstruction(
+                cell_n=self.cell_n,
                 line_n=self.line_indices[from_import_match.start()],
                 queue=from_import_match.group('queue'),
                 heads=[h.strip() for h in from_import_match.group('heads').split(',')]
             )
         for from_import_match in REGEX_FROM_IMPORT_PARLST.finditer(self.source_code):
             yield FromImportInstruction(
+                cell_n=self.cell_n,
                 line_n=self.line_indices[from_import_match.start()],
                 queue=from_import_match.group('queue'),
                 heads=[h.strip() for h in from_import_match.group('heads').split(',')]

@@ -5,7 +5,6 @@ if TYPE_CHECKING:
     from typing import Optional
     from inc_map.back.support_c.include_matcher import IncludeInstruction
 
-import sys
 from pathlib import Path
 
 from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
