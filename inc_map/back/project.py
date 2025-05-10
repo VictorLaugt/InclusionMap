@@ -1,59 +1,13 @@
 from __future__ import annotations
 
+from inc_map.back.bimap import BiMap
 from inc_map.readable_path import readable_path
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Type, Iterator, Iterable, Hashable
+    from typing import Type, Iterator, Iterable
     from pathlib import Path
     from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
-
-
-class BiMap:
-    def __init__(self):
-        self._key_to_values: dict[Hashable, set[Hashable]] = {}
-        self._value_to_keys: dict[Hashable, set[Hashable]] = {}
-
-    def add_key_value(self, key: Hashable, value: Hashable):
-        if (value_set := self._key_to_values.get(key)) is not None:
-            value_set.add(value)
-        else:
-            self._key_to_values[key] = {value}
-
-        if (key_set := self._value_to_keys.get(value)) is not None:
-            key_set.add(key)
-        else:
-            self._value_to_keys[value] = {key}
-
-    def discard_key_value(self, key: Hashable, value: Hashable):
-        value_set = self._key_to_values.get(key)
-        key_set = self._value_to_keys.get(value)
-        if value_set is not None and key_set is not None:
-            value_set.discard(value)
-            key_set.discard(key)
-
-    def contains_key_value(self, key, value) -> bool:
-        if (value_set := self._key_to_values.get(key)) is None:
-            return False
-        if (key_set := self._value_to_keys.get(value)) is None:
-            return False
-        return value in value_set and key in key_set
-
-    def get_values(self, key: Hashable) -> set[Hashable]:
-        if (value_set := self._key_to_values.get(key)) is None:
-            return ()
-        return value_set
-
-    def get_keys(self, value: Hashable) -> set[Hashable]:
-        if (key_set := self._value_to_keys.get(value)) is None:
-            return ()
-        return key_set
-
-    def values(self) -> Iterable[Hashable]:
-        return self._key_to_values.values()
-
-    def keys(self) -> Iterable[Hashable]:
-        return self._key_to_values.keys()
 
 
 def walk(
@@ -70,11 +24,11 @@ def walk(
 
 
 class ProjectBuilder:
-    def __init__(self):
+    def __init__(self) -> None:
         self.root_dirs: set[Path] = set()
         self.include_dirs: set[Path] = set()
 
-    def add_root_directory(self, new_root: Path):
+    def add_root_directory(self, new_root: Path) -> None:
         new_root = new_root.resolve()
         sub_roots = [
             root for root in self.root_dirs if root.is_relative_to(new_root)
@@ -82,7 +36,7 @@ class ProjectBuilder:
         self.root_dirs.difference_update(sub_roots)
         self.root_dirs.add(new_root)
 
-    def add_include_directory(self, inc_dir: Path):
+    def add_include_directory(self, inc_dir: Path) -> None:
         inc_dir = inc_dir.resolve()
         sub_idirs = [
             idir for idir in self.include_dirs if idir.is_relative_to(inc_dir)
@@ -115,19 +69,43 @@ class ProjectBuilder:
 
 
 class Project:
-    def __init__(
-        self,
-        inspector: AbstractInclusionInspector,
-        source_files: set[Path],
-        root_dirs: set[Path],
-    ) -> None:
-        self.source_files = source_files
-        self.root_dirs = root_dirs
+    def __init__(self, root_dirs: set[Path], inspector: AbstractInclusionInspector) -> None:
+        self.root_dirs = root_dirs  # used to compute more readable paths
+        self.source_files: set[Path] = set()  # nodes of the dependency graph
+        self.dependencies: BiMap[Path, Path] = BiMap()  # edges of the dependency graph
+        self.inspector = inspector  # used to build the edges of the dependency graph
 
-        self.dependencies: BiMap[Path, Path] = BiMap()
-        for file in self.source_files:
-            for dep in inspector.find_dependencies(file):
+    def build_every_dependencies(self, source_files: Iterable[Path]) -> None:
+        for file in source_files:
+            self.source_files.add(file)
+            for dep in self.inspector.find_dependencies(file):
                 self.dependencies.add_key_value(file, dep)
+
+    def build_forward_dependencies(self, source_files: Iterable[Path]) -> None:
+        visited: set[Path] = set()
+        layer = source_files
+        while len(layer) > 0:
+            next_layer = set()
+            for file in layer:
+                visited.add(file)
+                for dep in self.inspector.find_dependencies(file):
+                    self.dependencies.add_key_value(file, dep)
+                    if dep not in visited:
+                        next_layer.add(dep)
+            layer = next_layer
+
+        self.source_files.update(visited)
+
+    def build_backward_dependencies(self, source_files: Iterable[Path]) -> None:
+        visited: set[Path] = set()
+        dependencies: BiMap[Path, Path] = BiMap()
+        for file in source_files:
+            visited.add(file)
+            for dep in self.inspector.find_dependencies(file):
+                dependencies.add_key_value(file, dep)
+
+        ... # TODO: filter (visited, dependencies) to only keep the backward dependencies; then update (self.source_files, self.dependencies) with (visited, dependencies)
+        raise NotImplementedError
 
     def __repr__(self) -> str:
         string_builder = []
@@ -142,14 +120,6 @@ class Project:
 
     def is_not_empty(self) -> bool:
         return len(self.dependencies.keys()) > 0
-
-    def readable_path(self, file: Path) -> Path:
-        for root in self.root_dirs:
-            if file.is_relative_to(root):
-                if len(self.root_dirs) == 1:
-                    return file.relative_to(root)
-                return Path(root.name, file.relative_to(root))
-        raise ValueError(f'Unknown file "{file}"')
 
     def remove_redundancies(self) -> None:
         for a in self.source_files:

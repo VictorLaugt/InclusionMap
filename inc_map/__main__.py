@@ -45,11 +45,39 @@ def build_arg_parser() -> argparse.ArgumentParser:
         nargs='*',
         type=Path,
         help=(
-            "Répertoires dans lesquels commence la recherche des fichiers "
-            "inclus. Par défaut, la recherche commence dans les répertoires "
-            "racines."
+            "Répertoires dans lesquels les instructions d'inclusions pointent. "
+            "Par défaut, les instructions d'inclusions pointent dans les "
+            "répertoires racines du projet."
         )
     )
+    parser_subgraph = parser.add_mutually_exclusive_group()
+    parser_subgraph.add_argument('-f', '--subgraph-forward',
+        nargs='+',
+        type=Path,
+        help=(
+            "Construit uniquement un sous-graphe des dépendances en partant de "
+            "l'ensemble de fichiers spécifié et en parcourant récursivement les "
+            "fichiers dont ils dépendent. "
+        )
+    )
+    parser_subgraph.add_argument('-b', '--subgraph-backward',
+        nargs='+',
+        type=Path,
+        help=(
+            "Construit uniquement un sous-graphe des dépendances en partant de "
+            "l'ensemble de fichier spécifiés et en parcourant récursivement les "
+            "fichiers qui dépendent d'eux."
+        )
+    )
+    parser.add_argument('-s', '--simplify',
+        action='store_true',
+        help=(
+            "Simplifie le graphe en exploitant la transitivité de la relation "
+            "d'inclusion. Si x inclut y, y inclut z, et x inclut z, alors "
+            "le graphe n'affichera pas le fait que x inclu z."
+        )
+    )
+
     parser.add_argument('-l', '--language',
         required=True,
         choices=('c', 'c++', 'python'),
@@ -72,14 +100,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
             "`__pycache__` pour python)."
         )
     )
-    parser.add_argument('-s', '--simplify',
-        action='store_true',
-        help=(
-            "Simplifie le graphe en exploitant la transitivité de la relation "
-            "d'inclusion. Si x inclut y, y inclut z, et x inclut z, alors "
-            "le graphe n'affichera pas le fait que x inclu z."
-        )
-    )
+
     parser.add_argument('--display-algorithm',
         choices=('default', 'patchwork', 'circo', 'osage', 'sfdp', 'dot', 'twopi', 'neato', 'fdp'),
         default='dot',
@@ -96,7 +117,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
             "(7 par défaut)."
         )
     )
-    parser.add_argument('--groups', '-g',
+    parser.add_argument('-g', '--groups',
         nargs='*',
         type=arg_checker_group_regex,
         help=(
