@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  test-install:
+  test-pip-installation:
     runs-on: ubuntu-latest
     strategy:
       matrix:
