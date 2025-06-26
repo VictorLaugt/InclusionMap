@@ -43,6 +43,7 @@ setup(
     packages=[
         'inc_map',
         'inc_map.back',
+        'inc_map.back.common_features'
         'inc_map.back.support_c',
         'inc_map.back.support_python'
     ],
