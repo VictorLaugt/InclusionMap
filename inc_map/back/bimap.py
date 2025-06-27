@@ -6,6 +6,9 @@ V = TypeVar('V', bound=Hashable)
 
 
 class BiMap(Generic[K, V]):
+    _empty_key_set: frozenset[K] = frozenset()
+    _empty_value_set: frozenset[V] = frozenset()
+
     def __init__(self) -> None:
         self._key_to_values: dict[K, set[V]] = {}
         self._value_to_keys: dict[V, set[K]] = {}
@@ -57,14 +60,14 @@ class BiMap(Generic[K, V]):
             if (key_set := self._value_to_keys.get(value)) is not None:
                 key_set.difference_update(other_key_set)
 
-    def get_keys(self, value: V) -> set[K]:
+    def get_keys(self, value: V) -> set[K] | frozenset[K]:
         if (key_set := self._value_to_keys.get(value)) is None:
-            return ()
+            return self._empty_key_set
         return key_set
 
-    def get_values(self, key: K) -> set[V]:
+    def get_values(self, key: K) -> set[V] | frozenset[V]:
         if (value_set := self._key_to_values.get(key)) is None:
-            return ()
+            return self._empty_value_set
         return value_set
 
     def keys(self) -> Iterable[K]:
