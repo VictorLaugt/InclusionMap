@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Generic, TypeVar, Hashable, Iterable
+from typing import Generic, TypeVar, Hashable, AbstractSet
 K = TypeVar('K', bound=Hashable)
 V = TypeVar('V', bound=Hashable)
 
@@ -60,7 +60,7 @@ class BiMap(Generic[K, V]):
             if (key_set := self._value_to_keys.get(value)) is not None:
                 key_set.difference_update(other_key_set)
 
-    def get_keys(self, value: V) -> set[K] | frozenset[K]:
+    def get_keys(self, value: V) -> AbstractSet[K]:
         if (key_set := self._value_to_keys.get(value)) is None:
             return self._empty_key_set
         return key_set
@@ -70,8 +70,8 @@ class BiMap(Generic[K, V]):
             return self._empty_value_set
         return value_set
 
-    def keys(self) -> Iterable[K]:
+    def keys(self) -> AbstractSet[K]:
         return self._key_to_values.keys()
 
-    def values(self) -> Iterable[V]:
+    def values(self) -> AbstractSet[V]:
         return self._value_to_keys.keys()

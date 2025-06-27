@@ -5,7 +5,7 @@ from inc_map.readable_path import readable_path
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Type, Iterator, Iterable
+    from typing import Type, Iterator, Collection
     from pathlib import Path
     from inc_map.back.common_features.abstract_inclusion_inspector import AbstractInclusionInspector
 
@@ -75,13 +75,13 @@ class Project:
         self.dependencies: BiMap[Path, Path] = BiMap()  # edges of the dependency graph
         self.inspector = inspector  # used to build the edges of the dependency graph
 
-    def build_every_dependencies(self, source_files: Iterable[Path]) -> None:
+    def build_every_dependencies(self, source_files: Collection[Path]) -> None:
         for file in source_files:
             self.source_files.add(file)
             for dep in self.inspector.find_dependencies(file):
                 self.dependencies.add_key_value(file, dep)
 
-    def build_forward_dependencies(self, source_files: Iterable[Path]) -> None:
+    def build_forward_dependencies(self, source_files: Collection[Path]) -> None:
         visited: set[Path] = set()
         layer = source_files
         while len(layer) > 0:
@@ -96,7 +96,7 @@ class Project:
 
         self.source_files.update(visited)
 
-    def build_backward_dependencies(self, source_files: Iterable[Path]) -> None:
+    def build_backward_dependencies(self, source_files: Collection[Path]) -> None:
         visited: set[Path] = set()
         dependencies: BiMap[Path, Path] = BiMap()
         for file in source_files:

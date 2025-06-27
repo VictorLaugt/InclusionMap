@@ -99,7 +99,7 @@ class ImportMatcher:
         for import_match in REGEX_IMPORT.finditer(self.source_code):
             queues = []
             for q in import_match.group('queues').split(','):
-                queues.append(REGEX_QUEUE.fullmatch(q.strip()).group('queue'))
+                queues.append(REGEX_QUEUE.fullmatch(q.strip()).group('queue'))  # type: ignore
             yield ImportInstruction(
                 cell_n=self.cell_n,
                 line_n=self.line_indices[import_match.start()],
