@@ -15,7 +15,7 @@ with README_FILE.open(mode='r') as readme:
 
 setup(
     name="InclusionMap",
-    version="1.5.1",
+    version="1.5.2",
 
     description=(
         "A tool for generating the inclusion map of a programming project. "
