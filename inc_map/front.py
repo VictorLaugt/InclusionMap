@@ -4,12 +4,12 @@ from inc_map.readable_path import readable_path
 
 import matplotlib.pyplot as plt
 import networkx as nx
-from netgraph import EditableGraph, InteractiveGraph
+from netgraph import EditableGraph, InteractiveGraph  # type: ignore
 from distinctipy import get_colors as get_distinct_colors
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import TypeAlias, TypeVar, Optional
+    from typing import TypeAlias, TypeVar, Optional, Collection
     from pathlib import Path
     from inc_map.back.project import Project
     from re import Pattern
@@ -28,15 +28,12 @@ def brighten(color: tuple[float, float, float], pastel_factor: float):
     )
 
 
-def colorize_distinctly(mapping: dict[K, Color]) -> None:
-    distinct_colors = get_distinct_colors(len(mapping))
-    for k, color in zip(mapping.keys(), distinct_colors):
-        mapping[k] = color
+def colorize_distinctly(keys: Collection[K]) -> dict[K, Color]:
+    return {k: color for k, color in zip(keys, get_distinct_colors(len(keys)))}
 
 
 def color_groups_from_suffixes(project: Project) -> tuple[dict[Node, Color], dict[Node, Color]]:
-    suffix_to_color = {path.suffix: None for path in project.source_files}
-    colorize_distinctly(suffix_to_color)
+    suffix_to_color = colorize_distinctly([path.suffix for path in project.source_files])
 
     node_color = {}
     node_edge_color = {}
@@ -54,8 +51,7 @@ def color_groups_from_regexes(project: Project, regexes: list[Pattern]) -> tuple
         filename = path.name
         file_to_group[path] = tuple((pattern.fullmatch(filename) is None) for pattern in regexes)
 
-    group_to_color = {group: None for group in file_to_group.values()}
-    colorize_distinctly(group_to_color)
+    group_to_color = colorize_distinctly(file_to_group.values())
 
     node_color = {}
     node_edge_color = {}
@@ -124,3 +120,4 @@ def show_project_graph(
     # plot_instance = InteractiveGraph(graph, **kwargs)
     plot_instance = EditableGraph(graph, **kwargs)
     plt.show()
+    return plot_instance

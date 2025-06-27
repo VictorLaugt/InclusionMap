@@ -227,7 +227,7 @@ def main():
     # ---- display the inclusion map
     if project.is_not_empty():
         layout_algorithm = get_display_algorithm_name(args.display_algorithm)
-        show_project_graph(project, args.font_size, args.groups, layout_algorithm)
+        graph_display = show_project_graph(project, args.font_size, args.groups, layout_algorithm)
     else:
         print("No internal inclusion found")
 
