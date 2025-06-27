@@ -65,7 +65,7 @@ class ProjectBuilder:
             self.include_dirs,
             self.root_dirs
         )
-        return Project(inspector, source_files, self.root_dirs)
+        return Project(self.root_dirs, inspector)
 
 
 class Project:
@@ -93,7 +93,6 @@ class Project:
                     if dep not in visited:
                         next_layer.add(dep)
             layer = next_layer
-
         self.source_files.update(visited)
 
     def build_backward_dependencies(self, source_files: Collection[Path]) -> None:
@@ -103,7 +102,6 @@ class Project:
             visited.add(file)
             for dep in self.inspector.find_dependencies(file):
                 dependencies.add_key_value(file, dep)
-
         ... # TODO: filter (visited, dependencies) to only keep the backward dependencies; then update (self.source_files, self.dependencies) with (visited, dependencies)
         raise NotImplementedError
 

@@ -34,6 +34,18 @@ def arg_checker_group_regex(arg: str) -> re.Pattern:
         raise argparse.ArgumentTypeError(err.args[0])
 
 
+"""
+TODO: Simplify the command-line arguments `roots` and `-I`.
+User must be able to simply specify the directories containing source nodes and
+those containing the target nodes:
+- Source nodes are the files which can include others. Code in these files must
+statically analysed by the program to find inclusion instructions.
+- Target nodes are the files which can be included by others. Path of these
+files must be known by the program but their code does not need to be statically
+analyzed.
+
+TODO: translate in english the description of the command-line arguments
+"""
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument('roots',
@@ -221,6 +233,8 @@ def main():
 
     if args.simplify:
         project.remove_redundancies()
+
+    # TODO: call one of the "build_*_dependencies" project method, depending on the command line arguments
 
     print(project)
 
