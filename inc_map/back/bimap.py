@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import Generic, TypeVar, Hashable, Iterable
-    K = TypeVar('K', bound=Hashable)
-    V = TypeVar('V', bound=Hashable)
+from typing import Generic, TypeVar, Hashable, Iterable
+K = TypeVar('K', bound=Hashable)
+V = TypeVar('V', bound=Hashable)
 
 
 class BiMap(Generic[K, V]):
