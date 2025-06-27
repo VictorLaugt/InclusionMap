@@ -4,7 +4,7 @@ from inc_map.readable_path import readable_path
 
 import matplotlib.pyplot as plt
 import networkx as nx
-from netgraph import EditableGraph, InteractiveGraph  # type: ignore
+from netgraph import EditableGraph, InteractiveGraph
 from distinctipy import get_colors as get_distinct_colors
 
 from typing import TYPE_CHECKING
